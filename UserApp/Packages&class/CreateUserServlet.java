@@ -6,8 +6,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Enumeration;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,16 +20,25 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class CreateUsewrServlet
  */
-@WebServlet("/addServlet")
+@WebServlet(urlPatterns="/addServlet")
 public class CreateUserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection;
 	
-	
-	public void init() {
+    public void init(ServletConfig config ) {
+		
 		try {
-		Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/mydb", "root", "12345");
+			ServletContext context = config.getServletContext();
+			
+			System.out.println("init()");
+			Enumeration<String> parameterNames = context.getInitParameterNames();
+			while(parameterNames.hasMoreElements()) {
+				String eachName = parameterNames.nextElement();
+				System.out.println("Context Param Name: "+ eachName);
+				System.out.println("Context Param Value: " + context.getInitParameter(eachName));
+			}
+			Class.forName("com.mysql.jdbc.Driver");
+			connection = DriverManager.getConnection(context.getInitParameter("dbUrl"), context.getInitParameter("dbUser"), context.getInitParameter("dbPassword"));
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -34,11 +47,10 @@ public class CreateUserServlet extends HttpServlet {
 		}
 	}
 	
-	
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String firstName = request.getParameter("firstname");
+		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");

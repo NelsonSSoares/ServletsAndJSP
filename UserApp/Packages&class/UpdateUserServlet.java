@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class CreateUsewrServlet
  */
-@WebServlet("/deleteServlet")
+@WebServlet("/updateServlet")
 public class UpdateUserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection;
@@ -39,15 +39,16 @@ public class UpdateUserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String email = request.getParameter("email");
+		String password = request.getParameter("password");
 		
 		try {
 			Statement statement = connection.createStatement();
-			int result = statement.executeUpdate("delete from user  where email='"+email+"' ");
+			int result = statement.executeUpdate("update user set password='"+password+"', email='"+email+"' where email='"+email+"' ");
 			PrintWriter out = response.getWriter();
 			if(result > 0) {
-				out.print("<h1>USER DELETED!!</h1>");
+				out.print("<h1>PASSWORD UPDATED!!</h1>");
 			}else {
-				out.print("<h1>USER NOT FOUND IN THE DATABASE</h1>");
+				out.print("<h1>ERROR CREATING THE USER</h1>");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
