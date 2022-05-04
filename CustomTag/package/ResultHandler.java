@@ -36,11 +36,34 @@ public class ResultHandler extends TagSupport{
 		
 		ServletRequest request = pageContext.getRequest();
 		String email = request.getParameter("email");
+		
+		try {
+			stmt.setString(1, email);
+			ResultSet rs = stmt.executeQuery();
+			
+			JspWriter out = pageContext.getOut();
+			
+			if(rs.next()) {
+				
+				out.print("user details are : <br/> First Name: ");
+				
+				out.print(rs.getString(1));
+				out.print("<br/> Last Name: ");
+				out.print(rs.getString(2));
+			}else {
+				out.print("Invalid Email!");
+			}
+			
+		barra /
+		}catch(SQLException  | IOException e) {
+			e.printStackTrace();
+		}
+		
 		return Tag.SKIP_BODY;
 	}
 		
 		
-	
+
 	@Override
 	public void realese() {
 		try {
